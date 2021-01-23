@@ -1,0 +1,163 @@
+{% extends 'blog/base.html' %}
+{% load static %}
+{% block content_blog %}
+	<div class="genre-container mt-4">
+		<div class="search mb-4">
+			<form id="demo-2" class="mr-1 d-inline sp" action="{% url 'search' %}" autocomplete="on">
+	            <input class="form-control1" value="{{ search_value }}" id="search_submit" name="q" type="text" placeholder="Search..">
+	          </form>
+		</div>
+		{% if query != None and query|length > 0 %}
+		<div class="row">
+			<div class="col-lg-8">
+				<div class="head pb-3 ">
+					<ul class="nav nav-tabs">
+						<li class="nav-item active">
+							<a data-toggle="pill" href="#stories-search" class="  mr-3 link nav-link active">Stories</a>
+						</li>
+						<li class="nav-item">						
+							<a data-toggle="pill" href="#people-search" class=" mr-3 link nav-link">People</a>
+						</li>
+						<li class="nav-item">
+							<a data-toggle="pill" href="#tags-search" class=" link nav-link">Tags</a>
+						</li>
+					</ul>
+				</div>
+				<br>
+				<div class="tab-content">
+					<div id="stories-search" class="tab-pane active">
+						{% if story_query.all.count == 0 %}
+							<div style="padding: 50px 0" class="rounded mb-3 text-center">
+								<h2 class="align-self-center font-weight-bolder">No Stories Found</h2>
+							</div>
+						{% else %}
+							{% for story in story_query %}
+								<div class="card p-2 border-0 mb-2">
+								  <a href="{% url 'show-story' username=story.author.username slug=story.slug %}"><img class="card-img-top rounded-0 img-fluid story-img{{ forloop.counter }}" style="max-height: 300px; width:100%; object-fit: cover" src="" alt=""></a>
+								  <div class="card-body text-left px-0 py-2">
+								  	<a href="{% url 'show-story' username=story.author.username slug=story.slug %}" class="link">
+								  		<h2><b>{{ story.title }}</b></h2>
+									    <div class="story-body{{ forloop.counter }} text-muted mb-1"></div>
+									</a>
+								    <div class="d-flex ">
+										<div class="mr-3">
+											<a href="{% url 'profile' username=story.author.username %}" class="d-inline"><img src="{{ story.author.profile.image.url }}" style="height: 45px; width: 45px; object-fit: cover" class="rounded-circle" alt=""></a>
+										</div>
+										<div class="">
+											<a href="{% url 'profile' username=story.author.username %}" class="link"><p class="m-0" style="font-size: 15px">{{ story.author.first_name }}</p></a>	
+											<p class="text-muted" style="font-size: 15px">{{ story.date_posted|date:"d M" }}</p>	
+										</div>
+									</div>
+								  </div>
+								  <div id="a{{ forloop.counter }}" style="display:none">{{ story.body|safe }}</div>
+								</div><br>
+							{% endfor %}
+						{% endif %}
+					</div>
+					<div id="people-search" class="tab-pane fade">
+						{% if people.all.count == 0 %}
+							<div style="padding: 50px 0" class="rounded mb-3 text-center">
+								<h2 class="align-self-center font-weight-bolder">No User Found</h2>
+							</div>
+						{% else %}
+							{% for object in people %}
+								<div class="p-3 border mb-3 shadow-sm mt-4">
+		        					<div class="d-flex align-items-center">
+		        						<a href="{% url 'profile' username=object.username %}">
+		        							<img style="height: 70px; width: 70px; object-fit: cover" class="rounded-circle" src="{{ object.profile.image.url }}" alt="">
+		        						</a>
+		        						<a href="{% url 'profile' username=object.username %}" class="ml-3 link d-block">
+		        							<p class="mb-0" style="font-size: 18px"><b>{{ object.first_name }}</b></p>
+		        							<p class="mb-1 text-muted">{{ object.profile.bio }}</p>
+		        						</a>
+		        					</div>	
+		        				</div>
+							{% endfor %}
+						{% endif %}
+					</div>
+					<div id="tags-search" class="tab-pane fade">
+						{% if genre.all.count == 0 %}
+							<div style="padding: 50px 0" class="rounded mb-3 text-center">
+								<h2 class="align-self-center font-weight-bolder">No Tags Found</h2>
+							</div>
+						{% else %}
+							{% for object in genre %}
+								<div class="p-3 border mb-3 shadow-sm mt-4">
+		        					<div class="d-flex align-items-center">
+		        						<a href="{% url 'genre' title=object.title %}">
+		        							<img style="height: 70px; width: 70px; object-fit: cover" class="rounded-circle" src="{{ object.image.url }}" alt="">
+		        						</a>
+		        						<a href="{% url 'genre' title=object.title %}" class="ml-3 link d-block">
+		        							<p class="mb-0" style="font-size: 18px"><b>{{ object.title }}</b></p>
+		        							<p class="mb-1 text-muted">{{ object.info }}</p>
+		        						</a>
+		        					</div>	
+		        				</div>
+							{% endfor %}
+						{% endif %}
+					</div>
+				</div>
+			</div>
+		
+
+			<div class="col-lg-4 desktop-view">
+				{% if genre.all.count != 0 %}
+					<div class="ml-2">
+						<p>TAGS</p>
+						{% for object in genre %}
+							<a href="{% url 'genre' title=object.title %}" class="link badge badge-light">{{ object.title }}</p></a>
+						{% endfor %}
+					</div>
+				{% endif %}
+				<div class="ml-2">
+					<div class="mt-5">
+						<p><strong>PEOPLE</strong></p><hr>
+						{% if people.all.count != 0 %}
+							{% for object in people %}
+								<div class="d-flex mt-2">
+									<div class="mr-2">
+										<a href="{% url 'profile' username=object.first_name %}" class="d-inline"><img src="{{ object.profile.image.url }}" style="height: 50px; width: 50px; object-fit: cover" class="rounded-circle" alt=""></a>
+									</div>
+									<div>
+										<a href="{% url 'profile' username=object.first_name %}" class="link">
+											<h4><b>{{ object.first_name }}</b></h4>
+											<p class="text-muted">{{ object.profile.bio }}</p>
+										</a>
+									</div>
+								</div>
+							{% endfor %}
+						{% else %}
+							<div style="padding: 50px 0" class="rounded mb-3 text-center">
+								<h4 class="align-self-center font-weight-bolder">No People Found</h4>
+							</div>
+						{% endif %}
+					</div>
+				</div>
+			</div>		
+		</div>
+		{% endif %}
+	</div>
+<script>
+	for(var i=1; i<={{ story_query.all.count }}; i++){
+		var src = $("#a"+i+" figure img:eq(0)").attr('src');
+		$(".story-img"+i).attr('src',src);
+		var a = $("#a"+i+" p");
+		var b = $(".story-body"+i);
+		for(var j=0;j<a.length;j++){
+			b.append(a[j]);
+		}
+		b.text(b.text().substring(0,150));
+		b.append("...");
+	}
+</script>
+
+<style type="text/css">
+	.sp input:-moz-placeholder {
+		color: grey !important;
+	}
+	.sp input::-webkit-input-placeholder {
+		color: grey !important;
+	}
+</style>
+
+{% endblock content_blog %}
