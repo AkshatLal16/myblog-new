@@ -31,3 +31,4 @@ Do want to have your own [Meduim](https://medium.com/) website. I have build thi
 * We are using **MySQL** for managing the database so we need to install MySQL client by using this command `pip install mysqlclient`.
 > Note:
 > If you want to user SQLite or PostgreSQL then you to configure the **settings.py** file for using any these database. For instance, I am using MySQL for managing the database. You can learn more to how to configure database from this link [https://docs.djangoproject.com/en/2.2/ref/databases/](https://docs.djangoproject.com/en/2.2/ref/databases/). 
+# myblog-new
